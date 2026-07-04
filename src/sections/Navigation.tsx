@@ -39,17 +39,24 @@ export default function Navigation() {
   return (
     <>
       <nav
-        className="fixed top-0 left-0 w-full z-50 transition-all duration-500"
-        style={{ padding: scrolled ? '14px 5vw' : '24px 5vw' }}
+        className="fixed left-0 top-0 z-50 w-full transition-all duration-500"
+        style={{ padding: scrolled ? '12px 5vw' : '22px 5vw' }}
       >
-        <div className="mission-panel flex items-center justify-between gap-5 px-4 py-3 md:px-5">
+        <div className="top-nav flex items-center justify-between gap-5 px-4 py-3 md:px-5">
           <a
             href="#hero"
-            className="font-display text-sm md:text-base font-medium tracking-tight"
-            style={{ color: 'var(--surface)' }}
+            className="top-nav__brand"
             onClick={() => setMenuOpen(false)}
           >
-            ADITYA ARORA
+            <span className="baymax-mark" aria-hidden="true">
+              <span />
+              <i />
+              <span />
+            </span>
+            <span>
+              <strong>ADITYA</strong>
+              <small>ROBOTICS</small>
+            </span>
           </a>
 
           <div className="hidden md:flex items-center gap-7">
@@ -60,13 +67,7 @@ export default function Navigation() {
                   key={link.label}
                   href={link.href}
                   data-active={activeSection === sectionId}
-                  className="mission-link font-mono text-xs tracking-widest"
-                  style={{
-                    color:
-                      activeSection === sectionId
-                        ? 'var(--wireframe)'
-                        : 'rgba(255, 255, 255, 0.72)',
-                  }}
+                  className="top-nav__link"
                 >
                   {link.label}
                 </a>
@@ -77,17 +78,13 @@ export default function Navigation() {
           <div className="hidden md:flex items-center gap-3">
             <span
               className="font-mono text-[10px] tracking-widest"
-              style={{ color: 'rgba(255, 255, 255, 0.55)' }}
+              style={{ color: 'var(--text-muted)' }}
             >
               MISSION {Math.round(scrollProgress * 100).toString().padStart(2, '0')}%
             </span>
             <a
               href="/Aditya_Arora_Resume.docx"
-              className="font-mono text-xs tracking-widest px-3 py-2"
-              style={{
-                color: 'var(--surface)',
-                border: '1px solid rgba(255, 255, 255, 0.22)',
-              }}
+              className="top-nav__resume"
             >
               RESUME
             </a>
@@ -96,7 +93,7 @@ export default function Navigation() {
           <button
             type="button"
             className="md:hidden inline-flex h-9 w-9 items-center justify-center"
-            style={{ color: 'var(--surface)' }}
+            style={{ color: 'var(--text-primary)' }}
             aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
@@ -114,14 +111,14 @@ export default function Navigation() {
         />
 
         {menuOpen && (
-          <div className="mission-panel mt-3 p-4 md:hidden">
+          <div className="top-nav top-nav--mobile mt-3 p-4 md:hidden">
             <div className="grid gap-3">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   className="font-mono text-sm tracking-widest"
-                  style={{ color: 'var(--surface)' }}
+                  style={{ color: 'var(--text-primary)' }}
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.label}
@@ -130,7 +127,7 @@ export default function Navigation() {
               <a
                 href="/Aditya_Arora_Resume.docx"
                 className="font-mono text-sm tracking-widest"
-                style={{ color: 'var(--wireframe)' }}
+                style={{ color: 'var(--accent-red)' }}
                 onClick={() => setMenuOpen(false)}
               >
                 RESUME

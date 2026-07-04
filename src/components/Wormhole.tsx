@@ -1,8 +1,19 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 interface WormholeProps {
   scrollProgress: number;
+}
+
+function canUseWebGL() {
+  try {
+    const canvas = document.createElement('canvas');
+    return Boolean(
+      canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+    );
+  } catch {
+    return false;
+  }
 }
 
 export default function Wormhole({ scrollProgress }: WormholeProps) {
@@ -12,6 +23,7 @@ export default function Wormhole({ scrollProgress }: WormholeProps) {
   const rafRef = useRef<number>(0);
   const tubeRef = useRef<THREE.Mesh | null>(null);
   const nodesRef = useRef<THREE.Group[]>([]);
+  const [webglFailed, setWebglFailed] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -20,13 +32,25 @@ export default function Wormhole({ scrollProgress }: WormholeProps) {
     const w = container.offsetWidth;
     const h = container.offsetHeight;
 
+    if (!canUseWebGL()) {
+      setWebglFailed(true);
+      return;
+    }
+
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x050505, 0.02);
 
     const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 1000);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+    } catch (error) {
+      console.warn('Wormhole disabled because WebGL could not be initialized.', error);
+      setWebglFailed(true);
+      return;
+    }
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setClearColor(0x050505);
@@ -210,6 +234,7 @@ export default function Wormhole({ scrollProgress }: WormholeProps) {
   return (
     <div
       ref={containerRef}
+      className={webglFailed ? 'wormhole-fallback' : undefined}
       style={{
         position: 'absolute',
         top: 0,
